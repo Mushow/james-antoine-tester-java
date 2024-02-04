@@ -13,18 +13,25 @@ public class FareCalculatorService {
         long inMillis = ticket.getInTime().getTime();
         long outMillis = ticket.getOutTime().getTime();
 
-        double duration = (outMillis - inMillis) / 1000.0 / 60.0 / 60.0;
+        double durationInMinutes = (outMillis - inMillis) / 1000.0 / 60.0;
 
-        switch (ticket.getParkingSpot().getParkingType()){
-            case CAR: {
-                ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
-                break;
+        if(durationInMinutes <= 30){
+            ticket.setPrice(0);
+        }else{
+            // Appliquer le tarif existant si plus de 30 minutes
+            // On s'assure de recalculer la durée pour correspondre à la tarrification avec getTime (en milis)
+            switch (ticket.getParkingSpot().getParkingType()){
+                case CAR: {
+                    ticket.setPrice((durationInMinutes / 60) * Fare.CAR_RATE_PER_HOUR);
+                    break;
+                }
+                case BIKE: {
+                    ticket.setPrice((durationInMinutes / 60) * Fare.BIKE_RATE_PER_HOUR);
+                    break;
+                }
+                default: throw new IllegalArgumentException("Unknown Parking Type");
             }
-            case BIKE: {
-                ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
-                break;
-            }
-            default: throw new IllegalArgumentException("Unknown Parking Type");
         }
     }
 }
+
