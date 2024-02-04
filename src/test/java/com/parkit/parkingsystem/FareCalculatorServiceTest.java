@@ -83,6 +83,49 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
+    public void calculateFareCarWithDiscount(){
+        // Configuration initiale
+        Ticket ticket = new Ticket();
+        ticket.setVehicleRegNumber("ABC123");
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+        ticket.setParkingSpot(parkingSpot);
+        Date inTime = new Date();
+        // Simule un stationnement de 60 minutes (1 heure)
+        inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
+        ticket.setInTime(inTime);
+        ticket.setOutTime(new Date());
+
+        // Supposons que discount vaut true pour simuler un utilisateur régulier
+        fareCalculatorService.calculateFare(ticket, true);
+
+        // Vérifier que le prix appliqué correspond à 95% du tarif plein pour 1 heure de stationnement
+        double expectedPrice = (1 * Fare.CAR_RATE_PER_HOUR) * 0.95;
+        assertEquals(expectedPrice, ticket.getPrice(), 0.01);
+    }
+
+    @Test
+    public void calculateFareBikeWithDiscount(){
+        // Configuration similaire pour une moto
+        Ticket ticket = new Ticket();
+        ticket.setVehicleRegNumber("BIKE123");
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
+        ticket.setParkingSpot(parkingSpot);
+        Date inTime = new Date();
+        // Simule un stationnement de 60 minutes
+        inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
+        ticket.setInTime(inTime);
+        ticket.setOutTime(new Date());
+
+        // Supposons que discount vaut true (utilisateur régulier)
+        fareCalculatorService.calculateFare(ticket, true);
+
+        // Vérifiez le prix pour une moto
+        double expectedPrice = 0.95; // Parce que bikeFare = 1
+        assertEquals(expectedPrice, ticket.getPrice(), 0.01);
+    }
+
+
+    @Test
     public void calculateFareCarWithLessThan30minutesParkingTime(){
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() - (25 * 60 * 1000)); // 25 minutes parking time
