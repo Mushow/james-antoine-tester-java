@@ -87,7 +87,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    void testGetNextParkingNumberIfAvailable() {
+    void testGetNextParkingNumberIfAvailable() throws Exception {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
 
@@ -104,9 +104,7 @@ public class ParkingServiceTest {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(0);
 
-        ParkingSpot result = parkingService.getNextParkingNumberIfAvailable();
-
-        assertNull(result);
+        assertThrows(Exception.class, () -> parkingService.getNextParkingNumberIfAvailable());
 
         verify(inputReaderUtil, times(1)).readSelection();
         verify(parkingSpotDAO, times(1)).getNextAvailableSlot(any(ParkingType.class));
@@ -116,9 +114,7 @@ public class ParkingServiceTest {
     void testGetNextParkingNumberIfAvailableParkingNumberWrongArgument() {
         when(inputReaderUtil.readSelection()).thenReturn(3);
 
-         ParkingSpot result = parkingService.getNextParkingNumberIfAvailable();
-
-        assertNull(result);
+        assertThrows(IllegalArgumentException.class, () -> parkingService.getNextParkingNumberIfAvailable());
 
         verify(inputReaderUtil, times(1)).readSelection();
     }
