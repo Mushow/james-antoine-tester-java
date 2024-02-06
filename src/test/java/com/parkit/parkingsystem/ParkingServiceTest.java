@@ -116,7 +116,7 @@ public class ParkingServiceTest {
     void testGetNextParkingNumberIfAvailableParkingNumberWrongArgument() {
         when(inputReaderUtil.readSelection()).thenReturn(3);
 
-        ParkingSpot result = parkingService.getNextParkingNumberIfAvailable();
+         ParkingSpot result = parkingService.getNextParkingNumberIfAvailable();
 
         assertNull(result);
 
